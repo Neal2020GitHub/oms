@@ -95,8 +95,8 @@ Order 的基本属性如下：
 |  指令名  | [参数 1/子指令名] |                 [参数 2]                 |         [参数 3]          | [参数 4] |                             功能                             |
 | :------: | :---------------: | :--------------------------------------: | :-----------------------: | :------: | :---------------------------------------------------------- |
 | 错误输出 |                   |                                          |                           |          | 如果输入的指令名不属于该环境，输出`Command not exist`；若参数数量不正确，输出`Params' count illegal`；对于所有未提及的其他输入不合法的情况，输出`Input illegal`。 |
-|   add    |        -i         |              Dish 主键 DID               | m（正整数且保证数据合法） |          | 点餐，将选择的菜品（m 道）加入到对应的 Order 实例中，如果不存在这道菜，输出`Dish selected is not exist`；如果菜品售空，输出`Dish selected is sold out`；如果点餐数量超过菜品数量，输出`Dish is out of stock`，本次点餐无效 |
-|   add    |        -n         | Dish 名称 name（不考虑名称的重复和非法） | m（正整数且保证数据合法） |          | 点餐，将选择的菜品（m 道）加入到对应的 Order 实例中，如果不存在这道菜，输出`Dish selected is not exist`；如果菜品售空，输出`Dish selected is sold out`；如果点餐数量超过菜品数量，输出`Dish is out of stock`，本次点餐无效 |
+|   add    |        -i         |              Dish 主键 DID（保证合法）               | m（正整数且保证数据合法） |          | 点餐，将选择的菜品（m 道）加入到对应的 Order 实例中，如果不存在这道菜，输出`Dish selected not exist`；如果菜品售空，输出`Dish selected is sold out`；如果点餐数量超过菜品数量，输出`Dish is out of stock`，本次点餐无效 |
+|   add    |        -n         | Dish 名称 name | m（正整数且保证数据合法） |          | 点餐，将选择的菜品（m 道）加入到对应的 Order 实例中，如果不存在这道菜，输出`Dish selected not exist`；如果菜品售空，输出`Dish selected is sold out`；如果点餐数量超过菜品数量，输出`Dish is out of stock`，本次点餐无效 |
 |  finish  |                   |                                          |                           |          | 结束选菜，**检查此时 Order 的菜品数量**，如果菜品数量为 0，输出`Please select at least one dish to your order`，继续接收指令；否则退出到上一层环境中 |
 
 ##### 注意
@@ -225,7 +225,7 @@ order指令 -> return Order实例
 |  指令名  | [参数 1/子指令名] |       [参数 2]       | [参数 3] | [参数 4] |                             功能                             |
 | :------: | :---------------: | :------------------: | :------: | :------: | :---------------------------------------------------------- |
 | 错误输出 |                   |                      |          |          | 如果输入的指令名不属于该环境，输出`Command not exist`；若参数数量不正确，输出`Params' count illegal`；对于所有未提及的其他输入不合法的情况，输出`Input illegal` |
-|    gl    |                   |                      |          |          |    获取当前所服务的 Order 清单(get order list)，详情见下     |
+|    gl    |                   |                      |          |          |    获取当前所服务的 Order 清单(get order list)，单个订单所有菜品的输出还是和原先针对菜品的输出顺序相同（打印的顺序有两个优先级，首先是 H>C>O，其次是 6 位编码从小到大）。详情见下     |
 |    mo    |                   |                      |          |          |               分配订单(manage order)，详情见下               |
 |    sr    |      OID（订单ID）        |                      |          |          |       送餐并且收钱(serve and receive money)，完成后该服务员负责的订单数量减一，详情见下        |
 |    rw    |   CID（顾客ID）   | money （充入的金额） |          |          | 充值(recharge by waiter)。具体逻辑参见 oms4。**注意**当这次充值达到 VIP 标准后，总金额应该按照八折重新计算 |
@@ -269,7 +269,7 @@ SUM:37.0
 | 错误输出 |                           说明                          |
 | :----: | :---------------------------------------------------------- |
 | | 如果输入的指令名不属于该环境，输出`Command not exist`；若参数数量不正确，输出`Params' count illegal`；对于所有未提及的其他输入不合法的情况，输出`Input illegal` |
-| | 若当前服务员所服务的顾客清单为空，则输出`No serving order`  |
+|   mo   | 若当前服务员所服务的顾客清单为空，则输出`No serving order`  |
 ```
 # 顾客查看当前订单(check order)
 [-] co
